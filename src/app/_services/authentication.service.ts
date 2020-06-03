@@ -13,8 +13,8 @@ export class AuthenticationService {
     apiUrl =  'http://localhost:3000';
 
     constructor(private http: HttpClient) {
-        //this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
-        //this.currentUser = this.currentUserSubject.asObservable();
+        this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
+        this.currentUser = this.currentUserSubject.asObservable();
     }
 
     httpOptions = {
@@ -28,24 +28,29 @@ export class AuthenticationService {
     login(register: string, password: string) {
       console.log(register);
       console.log(password);
-      return this.http.post<any>(`${this.apiUrl}/login`, JSON.stringify({ register, password }))
+      let log = {
+        "register": register,
+        "password": password
+      }
+      return this.http.post<any>(`${this.apiUrl}/login`, log)
           .pipe(
-            map(user => {
-              console.log(user);
-              if (user && user.register) {
+            map(response => {
+              let newUser = response.data;
+              console.log(newUser);
+              if (newUser.length > 0) {
                   // store user details and jwt token in local storage to keep user logged in between page refreshes
-                  //localStorage.setItem('currentUser', JSON.stringify(user));
-                  //this.currentUserSubject.next(user);
+                  localStorage.setItem('currentUser', JSON.stringify(newUser[0]));
+                  this.currentUserSubject.next(newUser[0]);
               }
-
-              return user;
+              console.log(newUser[0]);
+              return newUser[0];
             })
           );
     }
 
     logout() {
         // remove user from local storage to log user out
-        //localStorage.removeItem('currentUser');
-        //this.currentUserSubject.next(null);
+        localStorage.removeItem('currentUser');
+        this.currentUserSubject.next(null);
     }
 }
