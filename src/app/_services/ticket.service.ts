@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Ticket } from 'src/app/_models/ticket';
 
 @Injectable({ providedIn: 'root' })
-export class ticktsService {
+export class TicketService {
     url = 'http://localhost:3000';
     constructor(private http: HttpClient) { }
 
