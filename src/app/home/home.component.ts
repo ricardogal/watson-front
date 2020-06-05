@@ -1,4 +1,6 @@
-﻿import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+﻿import { NgModule } from  '@angular/core';
+import { CommonModule } from  '@angular/common';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 
@@ -81,8 +83,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     private sendMessage(msg){
-      this.appendMessages(msg,'end');
-      this.callWatson(msg);
+      this.appendMessages(this.messageToSend,'end');
+      this.callWatson(this.messageToSend);
+      this.messageToSend=""
     }
 
     private callWatson(msg){
@@ -90,12 +93,13 @@ export class HomeComponent implements OnInit, OnDestroy {
         'message': msg
       }
       var result = "";
+
       this.watsonService.sendMessage(formData).pipe(first()).subscribe(watsons => {
         let dateObjs = new Date();
         let dateNow  = dateObjs.getDate()+"/"+dateObjs.getMonth()+"/"+dateObjs.getFullYear();
         let hourNow = dateObjs.getHours()+":"+dateObjs.getMinutes();
-        //let item = { id: this.id, msg: watsons.response, name:this.currentUser.name,thumb:'assets/images/_D.jpg', 'date': dateNow, hour:hourNow,order:'start' };
-        //this.messages.push(item);
+        let item = { id: this.id, msg: watsons.response, name:this.currentUser.name,thumb:'assets/images/_D.jpg', 'date': dateNow, hour:hourNow,order:'start' };
+        this.messages.push(item);
 
       });
     }
