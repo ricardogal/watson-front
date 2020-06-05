@@ -18,7 +18,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     messageToSend="";
     message={};
     id=0;
-    watsonMessage = "";
+    session = "";
 
 
 
@@ -40,7 +40,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.loadAllUsers();
-        this.callWatson("");
+        this.callWatson("")
     }
 
     ngOnDestroy() {
@@ -92,15 +92,18 @@ export class HomeComponent implements OnInit, OnDestroy {
       let formData = {
         'message': msg
       }
+      if(this.session != "") formData['session_id'] = this.session
       var result = "";
 
-      this.watsonService.sendMessage(formData).pipe(first()).subscribe(watsons => {
+      this.watsonService.sendMessage(formData).pipe(first()).subscribe((watsons:any) => {
         let dateObjs = new Date();
         let dateNow  = dateObjs.getDate()+"/"+dateObjs.getMonth()+"/"+dateObjs.getFullYear();
         let hourNow = dateObjs.getHours()+":"+dateObjs.getMinutes();
-        let item = { id: this.id, msg: watsons.response, name:this.currentUser.name,thumb:'assets/images/_D.jpg', 'date': dateNow, hour:hourNow,order:'start' };
-        this.messages.push(item);
-
+        this.session = watsons.session_id;
+        if(watsons){
+          let item = { id: this.id, msg: watsons.data.output.generic[0].text, name:this.currentUser.name,thumb:'assets/images/_D.jpg', 'date': dateNow, hour:hourNow,order:'start' };
+          this.messages.push(item);
+        }
       });
     }
 }

@@ -31,10 +31,12 @@
           </div>
           <div class="card-footer">
             <div class="input-group">
-              <textarea class="form-control type_msg" name="messageToSend" [(ngModel)]="messageToSend" placeholder="Digite sua mensagem..."></textarea>
+              <input type="text" class="form-control type_msg" (keyup.enter)="sendMessage()" name="messageToSend" [(ngModel)]="messageToSend" placeholder="Digite sua mensagem..."/>
+
+              <input type="hidden" class="form-control type_msg" name="session" [(ngModel)]="session"/>
               <div class="input-group-append">
                 <span class="input-group-text send_btn">
-                  <button (click)="sendMessage()" type="button" class="btn btn-outline-primary">Enviar</button>
+                  <button (click)="sendMessage()"  type="button" class="btn btn-outline-primary">Enviar</button>
                 </span>
               </div>
             </div>
