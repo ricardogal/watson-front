@@ -24,7 +24,7 @@
                 <img src="{{message.thumb}}" class="rounded-circle user_img_msg">
               </div>
               <div class="msg_cotainer">
-                {{message.msg}}
+                <span [innerHTML]="message.msg"></span>
                 <span class="msg_time">{{message.hour}}</span>
               </div>
             </div>

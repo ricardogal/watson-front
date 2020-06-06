@@ -19,6 +19,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     message={};
     id=0;
     session = "";
+    tickets=[]
 
 
 
@@ -36,6 +37,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           // { id: 1, msg: 'Hi, how are you samim?', name:'',thumb:'assets/images/_D.jpg', 'date': '01/06/2020', hour:'10:10',order:'start' },
           // { id: 2, msg: 'ola, como vai vc ?', name:'',thumb:'assets/images/homem.jpeg', 'date': '01/06/2020', hour:'10:12',order:'end' },
         ];
+        this.tickets = [];
     }
 
     ngOnInit() {
@@ -76,12 +78,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         });
     }
 
-    private loadAllTickets() {
-      /*this.ticketService.getAll().pipe(first()).subscribe(users => {
-          this.users = users;
-      });*/
-    }
-
     private sendMessage(msg){
       this.appendMessages(this.messageToSend,'end');
       this.callWatson(this.messageToSend);
@@ -90,7 +86,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     private callWatson(msg){
       let formData = {
-        'message': msg
+        'message': msg,
+        'idUser': this.currentUser.id,
+        'session_id': this.session != "" ? this.session : ""
       }
       if(this.session != "") formData['session_id'] = this.session
       var result = "";
@@ -101,8 +99,23 @@ export class HomeComponent implements OnInit, OnDestroy {
         let hourNow = dateObjs.getHours()+":"+dateObjs.getMinutes();
         this.session = watsons.session_id;
         if(watsons){
-          let item = { id: this.id, msg: watsons.data.output.generic[0].text, name:this.currentUser.name,thumb:'assets/images/_D.jpg', 'date': dateNow, hour:hourNow,order:'start' };
+          let item = { id: this.id, msg: watsons.result.output.generic[0].text, name:this.currentUser.name,thumb:'assets/images/_D.jpg', 'date': dateNow, hour:hourNow,order:'start' };
+          console.log(item);
           this.messages.push(item);
+          console.log(watsons);
+          if(watsons.data.length > 0){
+            this.tickets = watsons.data;
+            let html = "<div class='msg'>";
+
+            for(let value of watsons.data){
+                html += "<label>ID: </label>"+value.id+"<br />";
+                html += "<label>Título: </label>"+value.title+"<br />";
+                html += "<label>Descrição: </label>"+value.description+"<br /><br />";
+            }
+            html += "</div>";
+            let item = { id: this.id, msg: html, name:this.currentUser.name,thumb:'assets/images/_D.jpg', 'date': dateNow, hour:hourNow,order:'start' };
+            this.messages.push(item);
+          }
         }
       });
     }

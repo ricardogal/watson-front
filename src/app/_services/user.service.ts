@@ -9,11 +9,11 @@ export class UserService {
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<User[]>(this.url+"/users");
+        return this.http.get<User[]>(this.url+"/user");
     }
 
     getById(id: number) {
-        return this.http.get(`${this.url}/users/${id}`);
+        return this.http.get(`${this.url}/user/${id}`);
     }
 
     register(user: User) {
@@ -21,10 +21,10 @@ export class UserService {
     }
 
     update(user: User) {
-        return this.http.put(`${this.url}/users/${user.id}`, user);
+        return this.http.put(`${this.url}/user/${user.id}`, user);
     }
 
     delete(id: number) {
-        return this.http.delete(`${this.url}/users/${id}`);
+        return this.http.delete(`${this.url}/user/${id}`);
     }
 }
